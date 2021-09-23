@@ -17,7 +17,7 @@
 ### 1. Проксирование HTTP запросов – 5 баллов
 
 Должны успешно проксироваться HTTP запросы. Команда curl -x http://127.0.0.1:8080 http://mail.ru (8080 – порт, на котором запущена программа) должна возвращать
-
+```
 <html>
 
 <head><title>301 Moved Permanently</title></head>
@@ -43,6 +43,7 @@ User-Agent: curl/7.64.1
 Accept: */*
 
 Proxy-Connection: Keep-Alive
+```
 
 Необходимо:
 
@@ -51,7 +52,7 @@ Proxy-Connection: Keep-Alive
 - удалить заголовок Proxy-Connection
 
 Отправить на считанный хост (mail.ru:80) получившийся запрос
-
+```
 GET / HTTP/1.1
 
 Host: mail.ru
@@ -59,9 +60,11 @@ Host: mail.ru
 User-Agent: curl/7.64.1
 
 Accept: */*
+```
 
 Перенаправить все, что будет получено в ответ
 
+```
 HTTP/1.1 301 Moved Permanently
 
 Server: nginx/1.14.1
@@ -89,6 +92,7 @@ Location: https://mail.ru/
 </body>
 
 </html>
+```
 
 Убедиться, что
 
@@ -103,7 +107,7 @@ Location: https://mail.ru/
 Запрос curl -x http://127.0.0.1:8080 https://mail.ru (8080 – порт, на котором запущена программа) должен обрабатываться следующим образом:
 
 - На 8080 порт придет в открытом виде запрос CONNECT [https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT)
-
+```
 CONNECT mail.ru:443 HTTP/1.1
 
 Host: mail.ru:443
@@ -111,13 +115,13 @@ Host: mail.ru:443
 User-Agent: curl/7.64.1
 
 Proxy-Connection: Keep-Alive
-
+```
 Необходимо считать хост и порт (mail.ru 443) из первой строчки.
 
 Необходимо сразу вернуть ответ (сокет не закрывать, использовать его для последующего зашифрованного соединения)
-
+```
 HTTP/1.0 200 Connection established
-
+```
 После этого curl начнет установку защищенного соединения. Для установки такого соединения необходимо сгенерировать и подписать сертификат для хоста (mail.ru). Команды для генерации корневого сертификата и сертификата хоста [https://github.com/john-pentest/fproxy/blob/master/gen_ca.sh](https://github.com/john-pentest/fproxy/blob/master/gen_ca.sh) [https://github.com/john-pentest/fproxy/blob/master/gen_cert.sh](https://github.com/john-pentest/fproxy/blob/master/gen_cert.sh)
 
 Необходимо установить защищенное соединение с хостом (mail.ru:443), отправить в него все, что было получено и расшифровано от curl и вернуть ответ.
@@ -140,7 +144,7 @@ HTTP/1.0 200 Connection established
 - Не забыть про gzip и другие методы сжатия! (можно либо расшифровывать их, либо изменять заголовки на стороне прокси)
 
 Пример распаршенного запроса:
-
+```
 POST /path1/path2?x=123&y=asd HTTP/1.1
 
 Host: example.org
@@ -188,9 +192,11 @@ z = zxc
 }
 
 }
+```
 
 Пример распаршенного ответа:
 
+```
 HTTP/1.1 200 OK
 
 Server: nginx/1.14.1
@@ -216,6 +222,7 @@ Header: value
 "body": "<html>..."
 
 }
+```
 
 Убедиться, что получается записать запрос на авторизацию на сайте mail.ru и заново его отправить
 
